@@ -1,22 +1,33 @@
-const chats = [];
+const chats = {};
 const users = [];
 let currentChat;
 
 // dummy data
 const chat = new Chat('Friends');
-chats.push(chat);
-currentChat = chats[0];
+chats[chat.id] = chat;
+currentChat = chat;
 const user1 = new User('barnaby-1205');
 const user2 = new User('fresh4days');
 users.push(user1, user2);
 const message = new Message('hello, can you hear me?!', user1.username);
 currentChat.addMessage(message);
 
+document
+  .getElementById('new-chat-button')
+  .addEventListener('click', addNewChat);
+
+print();
+
 function print() {
   // chats
   let chatsHtml = '';
-  chats.forEach((chat) => {
-    chatsHtml += `<li class="list-group-item">${chat.name}</li>`;
+  //for in way
+  // for (let chatId in chats) {
+  //   chatsHtml += `<li class="list-group-item">${chats[chatId].name}</li>`;
+  // }
+  //forEach on the values
+  Object.values(chats).forEach((chat) => {
+    chatsHtml += `<li class="list-group-item" onclick="selectCurrentChat('${chat.id}')">${chat.name}</li>`;
   });
   document.getElementById('chats').innerHTML = chatsHtml;
   // current chat name
@@ -44,4 +55,22 @@ function print() {
   document.getElementById('users').innerHTML = usersHtml;
 }
 
-print();
+function addNewChat() {
+  const chatName = document.getElementById('new-chat-input').value;
+  if (chatName) {
+    // create the chat
+    const newChat = new Chat(chatName);
+    // add chat to chats
+    chats[newChat.id] = newChat;
+    // clear out the input box
+    document.getElementById('new-chat-input').value = '';
+    //print again
+    print();
+  }
+}
+
+function selectCurrentChat(chatId) {
+  currentChat = chats[chatId];
+  // print again
+  print();
+}
