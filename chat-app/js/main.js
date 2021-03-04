@@ -15,6 +15,13 @@ currentChat.addMessage(message);
 document
   .getElementById('new-chat-button')
   .addEventListener('click', addNewChat);
+document
+  .getElementById('new-chat-input')
+  .addEventListener('keydown', (event) => {
+    if (event.key == 'Enter') {
+      addNewChat();
+    }
+  });
 
 print();
 
@@ -36,9 +43,12 @@ function print() {
   let chatWindowHtml = '';
   currentChat.messages.forEach((message) => {
     chatWindowHtml += `
-        <div class="message">
+        <div onclick="likeMessage('${message.id}')" class="message">
             <p>${message.text}</p>
             <p>${message.username}</p>
+            <i class="bi bi-hand-thumbs-up-fill" style="display:${
+              message.liked ? 'block' : 'none'
+            }" ></i>
         </div>
     `;
   });
@@ -50,6 +60,7 @@ function print() {
     <div>
         <label for="${user.username}">${user.username}</label>
         <input id="${user.username}">
+        <button onclick="addNewMessage('${currentChat.id}', '${user.username}')" class="btn btn-primary">Send</button>
     </div>`;
   });
   document.getElementById('users').innerHTML = usersHtml;
@@ -67,6 +78,19 @@ function addNewChat() {
     //print again
     print();
   }
+}
+
+function addNewMessage(chatId, username) {
+  const text = document.getElementById(username).value;
+  const newMessage = new Message(text, username);
+  chats[chatId].addMessage(newMessage);
+  print();
+}
+
+function likeMessage(messageId) {
+  const message = currentChat.getMessage(messageId);
+  message.markAsLiked(!message.liked);
+  print();
 }
 
 function selectCurrentChat(chatId) {

@@ -347,3 +347,37 @@ class Todo {
 
   edit(text) {}
 }
+
+// async
+
+function getNewNumber(aFunction) {
+  const randomMillisecondNumber = Math.random() * 2000 + 1000;
+  window.setTimeout(function () {
+    aFunction(5);
+  }, randomMillisecondNumber);
+}
+
+getNewNumber(function (number) {
+  console.log(number);
+});
+
+console.log('Hi');
+console.log('Hello');
+
+function capFirstLetterAsync(words, callback) {
+  window.setTimeout(function () {
+    const capWords = [];
+
+    words.forEach((word) => {
+      capWords.push(word[0].toUpperCase() + word.substr(1));
+    });
+
+    callback(capWords);
+  }, Math.random() * 2000 + 1000);
+}
+
+capFirstLetterAsync(['dream', 'big', 'dreams'], handleModifiedArray);
+
+function handleModifiedArray(modifiedArrayStr) {
+  document.getElementById('words').innerText = modifiedArrayStr;
+}
