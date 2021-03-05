@@ -1,16 +1,13 @@
-const chats = {};
-const users = [];
-let currentChat;
+const chats = retrieveChats() || {};
+const users = retrieveUsers();
+let currentChat = retrieveCurrentChat();
 
-// dummy data
-const chat = new Chat('Friends');
-chats[chat.id] = chat;
-currentChat = chat;
-const user1 = new User('barnaby-1205');
-const user2 = new User('fresh4days');
-users.push(user1, user2);
-const message = new Message('hello, can you hear me?!', user1.username);
-currentChat.addMessage(message);
+// dummy users
+if (!users.length) {
+  const user1 = new User('barnaby-1205');
+  const user2 = new User('fresh4days');
+  users.push(user1, user2);
+}
 
 document
   .getElementById('new-chat-button')
@@ -28,42 +25,83 @@ print();
 function print() {
   // chats
   let chatsHtml = '';
-  //for in way
-  // for (let chatId in chats) {
-  //   chatsHtml += `<li class="list-group-item">${chats[chatId].name}</li>`;
-  // }
   //forEach on the values
   Object.values(chats).forEach((chat) => {
     chatsHtml += `<li class="list-group-item" onclick="selectCurrentChat('${chat.id}')">${chat.name}</li>`;
   });
   document.getElementById('chats').innerHTML = chatsHtml;
   // current chat name
-  document.getElementById('current-chat-name').innerText = currentChat.name;
-  // current chat message window
-  let chatWindowHtml = '';
-  currentChat.messages.forEach((message) => {
-    chatWindowHtml += `
-        <div onclick="likeMessage('${message.id}')" class="message">
-            <p>${message.text}</p>
-            <p>${message.username}</p>
-            <i class="bi bi-hand-thumbs-up-fill" style="display:${
-              message.liked ? 'block' : 'none'
-            }" ></i>
-        </div>
-    `;
-  });
-  document.getElementById('chat-window').innerHTML = chatWindowHtml;
+  if (currentChat) {
+    document.getElementById('current-chat-name').innerText = currentChat.name;
+    // current chat message window
+    let chatWindowHtml = '';
+    currentChat.messages.forEach((message) => {
+      chatWindowHtml += `
+      <div onclick="likeMessage('${message.id}')" class="message">
+      <p>${message.text}</p>
+      <p>${message.username}</p>
+      <i class="bi bi-hand-thumbs-up-fill" style="display:${
+        message.liked ? 'block' : 'none'
+      }" ></i>
+      </div>
+      `;
+    });
+    document.getElementById('chat-window').innerHTML = chatWindowHtml;
+  }
   // users
-  let usersHtml = '';
-  users.forEach((user) => {
-    usersHtml += `
-    <div>
-        <label for="${user.username}">${user.username}</label>
-        <input id="${user.username}">
-        <button onclick="addNewMessage('${currentChat.id}', '${user.username}')" class="btn btn-primary">Send</button>
-    </div>`;
-  });
-  document.getElementById('users').innerHTML = usersHtml;
+  if (users.length && currentChat) {
+    let usersHtml = '';
+    users.forEach((user) => {
+      usersHtml += `
+      <div>
+      <label for="${user.username}">${user.username}</label>
+      <input id="${user.username}">
+      <button onclick="addNewMessage('${currentChat.id}', '${user.username}')" class="btn btn-primary">Send</button>
+      </div>`;
+    });
+    document.getElementById('users').innerHTML = usersHtml;
+  }
+}
+
+// save the state of the application to local storage
+function save() {
+  // save the chats object
+  localStorage.setItem('chats', JSON.stringify(chats));
+  // save the users object
+  localStorage.setItem('users', JSON.stringify(users));
+  // save the currentChat object
+  localStorage.setItem('currentChat', JSON.stringify(currentChat));
+}
+
+function retrieveChats() {
+  const retrieveChats = JSON.parse(localStorage.getItem('chats'));
+  if (retrieveChats) {
+    return Object.values(retrieveChats).map((chat) => createChat(chat));
+  }
+  return null;
+}
+
+function retrieveUsers() {
+  return JSON.parse(localStorage.getItem('users') || '[]');
+}
+
+function retrieveCurrentChat() {
+  const chat = JSON.parse(localStorage.getItem('currentChat'));
+  if (chat) {
+    return createChat(chat);
+  }
+
+  return null;
+}
+
+function createChat(chat) {
+  // take care of messages
+  const messages = chat.messages.map(
+    (message) =>
+      new Message(message.text, message.id, message.username, message.liked)
+  );
+  // return new instance of class
+  return new Chat(chat.name, chat.id, messages);
 }
 
 function addNewChat() {
@@ -77,6 +115,7 @@ function addNewChat() {
     document.getElementById('new-chat-input').value = '';
     //print again
     print();
+    save();
   }
 }
 
@@ -85,12 +124,14 @@ function addNewMessage(chatId, username) {
   const newMessage = new Message(text, username);
   chats[chatId].addMessage(newMessage);
   print();
+  save();
 }
 
 function likeMessage(messageId) {
   const message = currentChat.getMessage(messageId);
   message.markAsLiked(!message.liked);
   print();
+  save();
 }
 
 function selectCurrentChat(chatId) {

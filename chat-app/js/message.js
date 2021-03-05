@@ -1,9 +1,9 @@
 class Message {
-  constructor(text, username) {
-    this.id = Utils.getNewId('message-')
+  constructor(text, id = Utils.getNewId('message-'), username, liked = false) {
     this.text = text;
+    this.id = id;
     this.username = username;
-    this.liked = false;
+    this.liked = liked;
   }
 
   markAsLiked(liked) {

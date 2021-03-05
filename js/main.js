@@ -381,3 +381,78 @@ capFirstLetterAsync(['dream', 'big', 'dreams'], handleModifiedArray);
 function handleModifiedArray(modifiedArrayStr) {
   document.getElementById('words').innerText = modifiedArrayStr;
 }
+
+function capFirstLetterAsyncPromise(words) {
+  const promise = new Promise((resolve, reject) => {
+    window.setTimeout(function () {
+      const capWords = [];
+
+      words.forEach((word) => {
+        capWords.push(word[0].toUpperCase() + word.substr(1));
+      });
+
+      // resolve(capWords);
+      reject("words don't matter");
+    }, Math.random() * 2000 + 1000);
+  });
+  return promise;
+}
+
+const capFirstLetterPromise = capFirstLetterAsyncPromise([
+  'dream',
+  'bigger',
+  'dreams',
+]);
+
+capFirstLetterPromise.then(
+  (resultArray) => {
+    document.getElementById('words1').innerText = resultArray;
+  },
+  (error) => {}
+);
+
+capFirstLetterPromise.then(
+  (resultArray) => {
+    document.getElementById('words2').innerText = resultArray;
+  },
+  (error) => {}
+);
+
+setTimeout(() => {
+  capFirstLetterPromise.then(
+    (resultArray) => {
+      document.getElementById('words3').innerText = resultArray;
+    },
+    (error) => {}
+  );
+}, 5000);
+
+capFirstLetterPromise.catch((error) =>
+  console.log('Something catastrophic happened!!', error)
+);
+
+// create an async function that returns a promise that
+// takes in an array of words and returns the longest word
+// you must user setTimeout to simulate async behavior
+
+function getLongestWordAsync(words) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // once timer is done
+      let longestWord = words[0];
+      for (let i = 1; i < words.length; i++) {
+        const word = words[i];
+        if (word.length > longestWord.length) {
+          longestWord = word;
+        }
+      }
+      resolve(longestWord);
+    }, Math.random() * 2000 + 1000);
+  });
+}
+
+const longestWordPromise = getLongestWordAsync(
+  'Something catastrophic happened!!'.split(' ')
+);
+
+longestWordPromise.then((longestWord) => console.log(longestWord));
