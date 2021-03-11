@@ -456,3 +456,45 @@ const longestWordPromise = getLongestWordAsync(
 );
 
 longestWordPromise.then((longestWord) => console.log(longestWord));
+
+// xmlhttprequest
+
+const request = new XMLHttpRequest();
+request.onreadystatechange = function () {
+  if (request.readyState == 4 && request.status == 200) {
+    let html = '<ul>';
+    JSON.parse(request.responseText).courses.forEach((course) => {
+      html += `<li>${course.name}</li>`;
+    });
+    html += '</ul>';
+    document.getElementById('data').innerHTML = html;
+  }
+};
+request.open('GET', 'https://golf-courses-api.herokuapp.com/courses');
+
+request.send();
+
+// fetch
+const getCoursesPromise = fetch(
+  'https://golf-courses-api.herokuapp.com/courses',
+  {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }
+);
+
+const courseDataPromise = getCoursesPromise.then((response) => {
+  console.log(response);
+  return response.json();
+});
+
+courseDataPromise.then((data) => {
+  let html = '<ul>';
+  data.courses.forEach((course) => {
+    html += `<li>${course.name}</li>`;
+  });
+  html += '</ul>';
+  document.getElementById('data1').innerHTML = html;
+});
