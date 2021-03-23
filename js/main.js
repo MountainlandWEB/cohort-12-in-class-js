@@ -498,3 +498,37 @@ courseDataPromise.then((data) => {
   html += '</ul>';
   document.getElementById('data1').innerHTML = html;
 });
+
+// Promises
+
+const promise = new Promise((resolve, reject) => {
+  fetch('https://golf-courses-api.herokuapp.com/courses')
+    .then((response) => response.json())
+    .then((data) => reject(data));
+});
+
+promise.then(
+  (data) => {
+    console.log('data: ', data);
+  },
+  (error) => console.log('it broke :(')
+);
+
+let a1 = 'a';
+
+const coordinatesPromise = getLatLong();
+
+coordinatesPromise.then((coordinates) => {
+  document.getElementById('coords').innerText = coordinates;
+});
+
+function getLatLong() {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition((data) =>
+      resolve(`You are at: ${data.coords.latitude} ${data.coords.longitude}`)
+    );
+  });
+}
+
+
+// 3 5 10 5 * + * 
