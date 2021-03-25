@@ -46,7 +46,32 @@ class LinkedList {
   }
 
   remove(data) {
-      // this is your part
+    // make sure list is not empty
+    if (this.head) {
+      // check to see if the node to be removed is the head
+      if (this.head.data == data) {
+        this.head = this.head.next;
+        // decrement the size
+        this._size -= 1;
+      }
+      // loop through the nodes and find the one we need to remove,
+      // keeping track of the one before
+      else {
+        let previous = this.head;
+        let current = this.head.next;
+        while (current) {
+          if (current.data == data) {
+            // remove node by pointing it's previous node to it's next node
+            previous.next = current.next;
+            // decrement the size
+            this._size -= 1;
+            break;
+          }
+          previous = current;
+          current = current.next;
+        }
+      }
+    }
   }
 
   size() {
