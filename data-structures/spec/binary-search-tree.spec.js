@@ -172,6 +172,21 @@ describe('BST', function () {
       expect(bst.find(14)).toBeTruthy();
       expect(bst.find(13)).toBeTruthy();
     });
+    it('should not find element with key 8 if only elements 5, and 10 are inserted', function () {
+      bst.insert({
+        key: 5,
+        data: {
+          name: 'five',
+        },
+      });
+      bst.insert({
+        key: 10,
+        data: {
+          name: 'ten',
+        },
+      });
+      expect(bst.find(8)).toBeFalsy();
+    });
   });
   describe('toArray', () => {
     it('should return and array with data three, eight, and ten correctly', function () {
@@ -194,9 +209,9 @@ describe('BST', function () {
         },
       });
       const array = bst.toArray();
-      expect(array[0].data.name).toBeEqual('three');
-      expect(array[1].data.name).toBeEqual('eight');
-      expect(array[2].data.name).toBeEqual('ten');
+      expect(array[0].data.name).toBe('three');
+      expect(array[1].data.name).toBe('eight');
+      expect(array[2].data.name).toBe('ten');
     });
     it('should return and array with data one, three, six, eight, ten, thirteen, fourteen correctly', function () {
       bst.insert({
@@ -242,13 +257,13 @@ describe('BST', function () {
         },
       });
       const array = bst.toArray();
-      expect(array[0].data.name).toBeEqual('one');
-      expect(array[1].data.name).toBeEqual('three');
-      expect(array[2].data.name).toBeEqual('six');
-      expect(array[3].data.name).toBeEqual('eight');
-      expect(array[4].data.name).toBeEqual('ten');
-      expect(array[5].data.name).toBeEqual('thirteen');
-      expect(array[6].data.name).toBeEqual('fourteen');
+      expect(array[0].data.name).toBe('one');
+      expect(array[1].data.name).toBe('three');
+      expect(array[2].data.name).toBe('six');
+      expect(array[3].data.name).toBe('eight');
+      expect(array[4].data.name).toBe('ten');
+      expect(array[5].data.name).toBe('thirteen');
+      expect(array[6].data.name).toBe('fourteen');
     });
   });
 });

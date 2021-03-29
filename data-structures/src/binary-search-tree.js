@@ -71,54 +71,47 @@ class BinarySearchTree {
   }
 
   // returns the data of the node if the node by that key is in the tree
-  find(key) {}
+  find(key) {
+    let current = this.root;
+    while (current) {
+      if (current.data.key == key) {
+        return current.data;
+      } else if (key > current.data.key) {
+        current = current.right;
+      } else {
+        current = current.left;
+      }
+    }
+  }
 
   // don't have to implement this one
   remove(key) {}
 
   size() {
-      return this._size;
+    return this._size;
   }
 
   // returns an array with the elements sorted
-  toArray() {}
+  toArray() {
+    if (this.root) {
+      let array = [];
+      this.addToArray(this.root, array);
+      return array;
+    }
+  }
+
+  addToArray(node, array) {
+    // if node has left child
+    if (node.left) {
+      this.addToArray(node.left, array);
+    }
+
+    // add this node to array
+    array.push(node.data);
+
+    // if node has a right child
+    if (node.right) {
+      this.addToArray(node.right, array);
+    }
+  }
 }
-
-let bst = new BinarySearchTree();
-
-bst.insert({
-  key: 8,
-  name: 'eight',
-});
-bst.insert({
-  key: 3,
-  name: 'three',
-});
-bst.insert({
-  key: 10,
-  name: 'ten',
-});
-bst.insert({
-  key: 14,
-  name: 'fourteen',
-});
-bst.insert({
-  key: 13,
-  name: 'thirteen',
-});
-bst.insert({
-  key: 1,
-  name: 'one',
-});
-bst.insert({
-  key: 6,
-  name: 'six',
-});
-bst.insert({
-  key: 4,
-  name: 'four',
-});
-bst.insert({
-  key: 7,
-  name: 'seven',
-});
