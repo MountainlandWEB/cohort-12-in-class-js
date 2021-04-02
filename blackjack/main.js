@@ -33,8 +33,8 @@ function addCards(cards, playerId) {
 
 function hitMe(playerId) {
   deckPromise.then((deck) => {
-    cardService.getCards(deck.deck_id, 1).then((cards) =>
-      addCards(cards, playerId)
-    );
+    cardService
+      .getCards(deck.deck_id, 1)
+      .then((cards) => addCards(cards, playerId));
   });
 }
